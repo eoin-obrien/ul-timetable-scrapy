@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import scrapy
 
+from ultimetable.items import ModuleExamTimetable
+
 
 class ModuleExamTimetableSpider(scrapy.Spider):
     name = 'module_exam_timetable'
@@ -20,13 +22,13 @@ class ModuleExamTimetableSpider(scrapy.Spider):
 
     def parse(self, response: scrapy.http.Response):
         details = [s.strip() for s in response.xpath('//td[2]/b/font/text()').getall()]
-        return {
-            'module_id': details[0],
-            'module_name': details[1],
-            'date': details[2],
-            'day': details[3],
-            'building': details[4],
-            'location': details[5],
-            'time': details[6],
-            'other_information': details[7] or None,
-        }
+        return ModuleExamTimetable(
+            module_id=details[0],
+            module_name=details[1],
+            date=details[2],
+            day=details[3],
+            building=details[4],
+            location=details[5],
+            time=details[6],
+            other_information=details[7] or None,
+        )

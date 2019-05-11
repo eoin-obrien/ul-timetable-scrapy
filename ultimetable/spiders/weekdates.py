@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import scrapy
 
+from ultimetable.items import WeekDate
+
 
 class WeekDatesSpider(scrapy.Spider):
     name = 'week_dates'
@@ -13,8 +15,8 @@ class WeekDatesSpider(scrapy.Spider):
     def parse(self, response: scrapy.http.Response):
         weeks = response.xpath('//tr[position() > 1]')
         for week in weeks:
-            yield {
-                'week_commencing': week.xpath('td[1]/text()').get(),
-                'teaching_week': week.xpath('td[2]/text()').get(),
-                'week_displayed_on_timetable': week.xpath('td[3]/text()').get(),
-            }
+            yield WeekDate(
+                week_commencing=week.xpath('td[1]/text()').get(),
+                teaching_week=week.xpath('td[2]/text()').get(),
+                week_displayed_on_timetable=week.xpath('td[3]/text()').get(),
+            )

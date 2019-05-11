@@ -2,6 +2,8 @@
 import scrapy
 from scrapy import Selector
 
+from ultimetable.items import CourseTimetable, CourseTimetableLesson
+
 
 class CourseTimetableSpider(scrapy.Spider):
     name = 'course_timetable'
@@ -25,24 +27,24 @@ class CourseTimetableSpider(scrapy.Spider):
     def parse(self, response: scrapy.http.Response):
         header = response.xpath('/html/body/b/h4/text()').get().strip()
         days = response.xpath('//tr[2]/td')
-        return {
-            'course_id': header.split()[2],
-            'year': header.split()[5],
-            'timetable': [list(self.parse_lessons(day)) for day in days],
-        }
+        return CourseTimetable(
+            course_id=header.split()[2],
+            year=header.split()[5],
+            timetable=[list(self.parse_lessons(day)) for day in days],
+        )
 
     @staticmethod
     def parse_lessons(day: Selector):
         lessons = day.xpath('p/font')
         for lesson in lessons:
             elements = [s.strip() for s in lesson.xpath('b/text()').getall()]
-            yield {
-                'start_time': elements[0],
-                'finish_time': elements[1],
-                'module_id': elements[2],
-                'kind': elements[3],
-                'group': elements[4] or None,
-                'lecturer': elements[5],
-                'rooms': elements[6].split(),
-                'weeks': elements[7][4:],
-            }
+            yield CourseTimetableLesson(
+                start_time=elements[0],
+                finish_time=elements[1],
+                module_id=elements[2],
+                kind=elements[3],
+                group=elements[4] or None,
+                lecturer=elements[5],
+                rooms=elements[6].split(),
+                weeks=elements[7][4:],
+            )

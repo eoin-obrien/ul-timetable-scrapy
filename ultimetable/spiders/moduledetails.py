@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import scrapy
 
+from ultimetable.items import ModuleDetails
+
 
 class ModuleDetailsSpider(scrapy.Spider):
     name = 'module_details'
@@ -20,7 +22,7 @@ class ModuleDetailsSpider(scrapy.Spider):
 
     def parse(self, response: scrapy.http.Response):
         details = [s.strip() for s in response.xpath('//td[2]//text()').getall()]
-        return {
-            'module_id': details[0],
-            'module_name': details[1],
-        }
+        return ModuleDetails(
+            module_id=details[0],
+            module_name=details[1],
+        )

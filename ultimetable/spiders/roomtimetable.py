@@ -2,6 +2,8 @@
 import scrapy
 from scrapy import Selector
 
+from ultimetable.items import RoomTimetableLesson, RoomTimetable
+
 
 class RoomTimetableSpider(scrapy.Spider):
     name = 'room_timetable'
@@ -21,23 +23,23 @@ class RoomTimetableSpider(scrapy.Spider):
 
     def parse(self, response: scrapy.http.Response):
         days = response.xpath('//tr[2]/td')
-        return {
-            'room_id': response.xpath('/html/body/b/text()').get().strip()[6:],
-            'timetable': [list(self.parse_lessons(day)) for day in days],
-        }
+        return RoomTimetable(
+            room_id=response.xpath('/html/body/b/text()').get().strip()[6:],
+            timetable=[list(self.parse_lessons(day)) for day in days],
+        )
 
     @staticmethod
     def parse_lessons(day: Selector):
         lessons = day.xpath('p/font')
         for lesson in lessons:
             elements = [s.strip() for s in lesson.xpath('b/text()').getall()]
-            yield {
-                'start_time': elements[0],
-                'finish_time': elements[1],
-                'module_ids': elements[2].split() if elements[2] else None,
-                'kind': elements[3],
-                'group': elements[4] or None,
-                'size': elements[5][7:],
-                'lecturer': elements[6] or None,
-                'weeks': elements[7][4:],
-            }
+            yield RoomTimetableLesson(
+                start_time=elements[0],
+                finish_time=elements[1],
+                module_ids=elements[2].split() if elements[2] else None,
+                kind=elements[3],
+                group=elements[4] or None,
+                size=elements[5][7:],
+                lecturer=elements[6] or None,
+                weeks=elements[7][4:],
+            )
