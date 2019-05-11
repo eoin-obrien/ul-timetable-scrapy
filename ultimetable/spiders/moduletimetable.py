@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from scrapy import Selector
 
-from ultimetable.items import ModuleTimetable, ModuleTimetableLesson
+from ultimetable.items import ModuleTimetableLesson
 
 
 class ModuleTimetableSpider(scrapy.Spider):
@@ -22,23 +21,20 @@ class ModuleTimetableSpider(scrapy.Spider):
                                  callback=self.parse)
 
     def parse(self, response: scrapy.http.Response):
+        module_id = response.xpath('/html/body/b/h4/text()').get().strip().split(' = ')[1]
         days = response.xpath('//tr[2]/td')
-        return ModuleTimetable(
-            module_id=response.xpath('/html/body/b/h4/text()').get().strip().split(' = ')[1],
-            timetable=[list(self.parse_lessons(day)) for day in days],
-        )
-
-    @staticmethod
-    def parse_lessons(day: Selector):
-        lessons = day.xpath('p/font')
-        for lesson in lessons:
-            elements = [s.strip() for s in lesson.xpath('b/text()').getall()]
-            yield ModuleTimetableLesson(
-                start_time=elements[0],
-                finish_time=elements[1],
-                kind=elements[2],
-                group=elements[3] or None,
-                lecturer=elements[4],
-                rooms=elements[5].split(),
-                weeks=elements[6][4:],
-            )
+        for idx, day in enumerate(days):
+            lessons = day.xpath('p/font')
+            for lesson in lessons:
+                elements = [s.strip() for s in lesson.xpath('b/text()').getall()]
+                yield ModuleTimetableLesson(
+                    module_id=module_id,
+                    day_id=idx,
+                    start_time=elements[0],
+                    finish_time=elements[1],
+                    kind=elements[2],
+                    group=elements[3] or None,
+                    lecturer=elements[4],
+                    rooms=elements[5].split(),
+                    weeks=elements[6][4:],
+                )

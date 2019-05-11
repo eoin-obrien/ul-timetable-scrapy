@@ -8,13 +8,10 @@
 import scrapy
 
 
-class CourseTimetable(scrapy.Item):
+class CourseTimetableLesson(scrapy.Item):
     course_id = scrapy.Field()
     year = scrapy.Field()
-    timetable = scrapy.Field()
-
-
-class CourseTimetableLesson(scrapy.Item):
+    day_id = scrapy.Field()
     start_time = scrapy.Field()
     finish_time = scrapy.Field()
     module_id = scrapy.Field()
@@ -23,14 +20,11 @@ class CourseTimetableLesson(scrapy.Item):
     lecturer = scrapy.Field()
     rooms = scrapy.Field()
     weeks = scrapy.Field()
-
-
-class ModuleTimetable(scrapy.Item):
-    module_id = scrapy.Field()
-    timetable = scrapy.Field()
 
 
 class ModuleTimetableLesson(scrapy.Item):
+    module_id = scrapy.Field()
+    day_id = scrapy.Field()
     start_time = scrapy.Field()
     finish_time = scrapy.Field()
     kind = scrapy.Field()
@@ -40,12 +34,9 @@ class ModuleTimetableLesson(scrapy.Item):
     weeks = scrapy.Field()
 
 
-class RoomTimetable(scrapy.Item):
-    room_id = scrapy.Field()
-    timetable = scrapy.Field()
-
-
 class RoomTimetableLesson(scrapy.Item):
+    room_id = scrapy.Field()
+    day_id = scrapy.Field()
     start_time = scrapy.Field()
     finish_time = scrapy.Field()
     module_ids = scrapy.Field()
@@ -56,12 +47,9 @@ class RoomTimetableLesson(scrapy.Item):
     weeks = scrapy.Field()
 
 
-class StudentTimetable(scrapy.Item):
-    student_id = scrapy.Field()
-    timetable = scrapy.Field()
-
-
 class StudentTimetableLesson(scrapy.Item):
+    student_id = scrapy.Field()
+    day_id = scrapy.Field()
     start_time = scrapy.Field()
     finish_time = scrapy.Field()
     module = scrapy.Field()
@@ -71,7 +59,7 @@ class StudentTimetableLesson(scrapy.Item):
     weeks = scrapy.Field()
 
 
-class ModuleExamTimetable(scrapy.Item):
+class ExamTimetableModule(scrapy.Item):
     module_id = scrapy.Field()
     module_name = scrapy.Field()
     date = scrapy.Field()
@@ -82,9 +70,8 @@ class ModuleExamTimetable(scrapy.Item):
     other_information = scrapy.Field()
 
 
-class StudentExamTimetable(scrapy.Item):
+class StudentExamTimetableModule(ExamTimetableModule):
     student_id = scrapy.Field()
-    timetable = scrapy.Field()
 
 
 class ModuleDetails(scrapy.Item):

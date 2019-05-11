@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 
-from ultimetable.items import ModuleExamTimetable
+from ultimetable.items import ExamTimetableModule
 
 
 class ModuleExamTimetableSpider(scrapy.Spider):
@@ -22,7 +22,7 @@ class ModuleExamTimetableSpider(scrapy.Spider):
 
     def parse(self, response: scrapy.http.Response):
         details = [s.strip() for s in response.xpath('//td[2]/b/font/text()').getall()]
-        return ModuleExamTimetable(
+        return ExamTimetableModule(
             module_id=details[0],
             module_name=details[1],
             date=details[2],
