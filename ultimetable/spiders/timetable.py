@@ -8,9 +8,6 @@ class TimetableSpider(scrapy.Spider):
     name = 'timetable'
     allowed_domains = ['bookofmodules.ul.ie', 'www.timetable.ul.ie']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def start_requests(self):
         url = 'https://bookofmodules.ul.ie/'
         yield scrapy.Request(url=url, callback=self.parse_book_of_modules)
